@@ -1,0 +1,135 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Method Test</title>
+  <style>
+    output {
+      white-space: pre;
+      font-family: monospace;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Method Test</h1>
+  </header>
+
+  <main>
+    <form>
+      <fieldset>
+        <legend>Record Form</legend>
+
+        <div hidden>
+          <label for="article-id">ID</label>
+          <input id="article-id" name="id" type="hidden">
+        </div>
+
+        <div>
+          <label for="article-name">Article name</label>
+          <input id="article-name" name="article-name">
+        </div>
+
+        <div>
+          <label for="article-body">Article title</label>
+          <textarea id="article-body" name="article-body"></textarea>
+        </div>
+
+        <div hidden>
+          <label for="article-date">Date</label>
+          <input id="article-date" name="date" type="hidden">
+        </div>
+
+        <menu>
+          <button id="post-btn" type="button">postBtn</button>
+          <button id="get-btn" type="button">getBtn</button>
+          <button id="put-btn" type="button">putBtn</button>
+          <button id="delete-btn" type="button">deleteBtn</button>
+        </menu>
+      </fieldset>
+    </form>
+    <output id="response"></output>
+
+    <script type="module">
+      window.addEventListener('DOMContentLoaded', function () {
+
+        function status(response) {
+          if (response.status === 200) {
+            return Promise.resolve(response);
+          } else {
+            return Promise.reject(new Error(response.status));
+          }
+        }
+
+        // POST
+        document.getElementById('post-btn').addEventListener('click', function () {
+
+          document.querySelector('#article-id').value++;
+          document.querySelector('#article-date').value = new Date();
+
+          let formData = new FormData(document.forms[0]);
+          let dataString = new URLSearchParams(formData).toString();
+
+          fetch('https://httpbin.org/post', {
+            method: 'POST',
+            body: dataString,
+          })
+            .then(status)
+            .then(response => response.text())
+            .then(data => document.getElementById('response').textContent = data)
+            .catch(error => console.log(error));
+        });
+
+        // GET
+        document.getElementById('get-btn').addEventListener('click', function () {
+
+          fetch('https://httpbin.org/get')
+            .then(status)
+            .then(response => response.text())
+            .then(data => document.getElementById('response').textContent = data)
+            .catch(error => console.log(error));
+        });
+
+        // PUT
+        document.getElementById('put-btn').addEventListener('click', function () {
+
+          document.querySelector('#article-id').value++;
+          document.querySelector('#article-date').value = new Date();
+
+          let formData = new FormData(document.forms[0]);
+          let dataString = new URLSearchParams(formData).toString();
+
+          fetch('https://httpbin.org/put', {
+            method: 'PUT',
+            body: dataString,
+          })
+            .then(status)
+            .then(response => response.text())
+            .then(data => document.getElementById('response').textContent = data)
+            .catch(error => console.log(error));
+        });
+
+        // DELETE
+        document.getElementById('delete-btn').addEventListener('click', function () {
+
+          document.querySelector('#article-id').value++;
+          document.querySelector('#article-date').value = new Date();
+
+          fetch('https://httpbin.org/delete', {
+            method: 'DELETE',
+            body: `id=${document.querySelector('#article-id').value}`,
+          })
+            .then(status)
+            .then(response => response.text())
+            .then(data => document.getElementById('response').textContent = data)
+            .catch(error => console.log(error));
+        });
+
+      });
+    </script>
+  </main>
+</body>
+
+</html>
